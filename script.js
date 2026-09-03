@@ -1,6 +1,7 @@
 const USUARIO = 'Almada Lima Filho';
 const SENHA = 'Almada Filho2026';
 const LOGADO_KEY = 'diario_logado_2026';
+const ANO_KEY = 'diario_ano_selecionado';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBT-wTmA3N1izSfKQd3e2Gv5q_dXF94W-g",
@@ -15,12 +16,21 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-document.querySelectorAll('nav a').forEach(link => {
-    link.addEventListener('click', function(e) {
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-        this.classList.add('active');
-    });
-});
+let anoAtual = 6;
+let alunos = [];
+let chamadaHoje = [];
+let chamadaSalva = null;
+
+function mostrarData() {
+    const hoje = new Date();
+    const dataStr = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+    document.getElementById('data-hoje').textContent = dataStr.charAt(0).toUpperCase() + dataStr.slice(1);
+}
+
+function hojeKey() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
 
 function entrar() {
     const userInput = document.getElementById('usuario-input');
@@ -40,6 +50,11 @@ function mostrarConteudo() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('conteudo-principal').style.display = 'block';
     mostrarData();
+    const salvo = localStorage.getItem(ANO_KEY);
+    if (salvo) {
+        anoAtual = parseInt(salvo, 10);
+    }
+    aplicarAnoSelecionado();
     carregarAlunos();
 }
 
@@ -50,32 +65,41 @@ function verificarSessao() {
 }
 
 document.getElementById('entrar-btn').addEventListener('click', entrar);
-
 document.getElementById('senha-input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') entrar();
 });
-
 document.getElementById('usuario-input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') document.getElementById('senha-input').focus();
 });
 
-let alunos = [];
-let chamadaHoje = [];
-let chamadaSalva = null;
-
-function mostrarData() {
-    const hoje = new Date();
-    const dataStr = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
-    document.getElementById('data-hoje').textContent = dataStr.charAt(0).toUpperCase() + dataStr.slice(1);
+function mudarAno(ano, el) {
+    anoAtual = ano;
+    localStorage.setItem(ANO_KEY, String(ano));
+    document.querySelectorAll('.ano-tab').forEach(function(t) { t.classList.remove('active'); });
+    if (el) el.classList.add('active');
+    aplicarAnoSelecionado();
+    carregarAlunos();
 }
 
-function hojeKey() {
-    const d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function aplicarAnoSelecionado() {
+    const rotulo = anoAtual + '° Ano';
+    document.getElementById('ano-badge').textContent = rotulo;
+    document.getElementById('ano-badge-resumo').textContent = rotulo;
+    document.getElementById('ano-badge-alunos').textContent = rotulo;
+    document.querySelectorAll('.ano-tab').forEach(function(t) {
+        t.classList.toggle('active', parseInt(t.dataset.ano, 10) === anoAtual);
+    });
+}
+
+function mudarSection(section, el) {
+    document.querySelectorAll('section').forEach(function(s) { s.style.display = 'none'; });
+    document.getElementById(section).style.display = 'block';
+    document.querySelectorAll('nav a').forEach(function(a) { a.classList.remove('active'); });
+    if (el) el.classList.add('active');
 }
 
 function carregarAlunos() {
-    db.ref('alunos').on('value', function(snapshot) {
+    db.ref('alunos/' + anoAtual).on('value', function(snapshot) {
         alunos = [];
         snapshot.forEach(function(child) {
             alunos.push({ id: child.key, nome: child.val().nome });
@@ -91,7 +115,7 @@ function carregarChamadaHoje() {
         return { id: a.id, nome: a.nome, status: 'presente' };
     });
 
-    db.ref('chamadas/' + key).once('value').then(function(snap) {
+    db.ref('chamadas/' + anoAtual + '/' + key).once('value').then(function(snap) {
         const existente = snap.val();
 
         if (existente && existente.registros) {
@@ -117,7 +141,7 @@ function renderizarChamada() {
     lista.innerHTML = '';
 
     if (chamadaHoje.length === 0) {
-        lista.innerHTML = '<p class="admin-nota">Nenhum aluno cadastrado. Adicione alunos na aba "Alunos" primeiro.</p>';
+        lista.innerHTML = '<p class="empty-msg">Nenhum aluno cadastrado neste ano. Adicione alunos na aba "Alunos" primeiro.</p>';
         return;
     }
 
@@ -166,17 +190,15 @@ function atualizarEstiloRadio(id, status) {
 }
 
 function salvarChamada() {
-    if (chamadaHoje.length === 0) { alert('Nao ha alunos para fazer a chamada.'); return; }
+    if (chamadaHoje.length === 0) { alert('Nao ha alunos para fazer a chamada neste ano.'); return; }
 
     const key = hojeKey();
     const registros = {};
     chamadaHoje.forEach(function(i) { registros[i.id] = i.status; });
 
-    db.ref('chamadas/' + key).set({ data: key, registros: registros }).then(function() {
+    db.ref('chamadas/' + anoAtual + '/' + key).set({ data: key, registros: registros }).then(function() {
         chamadaSalva = { data: key, registros: registros };
-        const msg = document.getElementById('chamada-msg');
-        msg.style.display = 'block';
-        setTimeout(function() { msg.style.display = 'none'; }, 3000);
+        mostrarToast('Chamada salva com sucesso!');
         renderizarResumo();
     }).catch(function(err) {
         alert('Erro ao salvar a chamada: ' + err.message);
@@ -191,7 +213,7 @@ function renderizarResumo() {
     const contagem = {};
     alunos.forEach(function(a) { contagem[a.id] = { nome: a.nome, presencas: 0, faltas: 0, justificadas: 0 }; });
 
-    db.ref('chamadas').once('value').then(function(snap) {
+    db.ref('chamadas/' + anoAtual).once('value').then(function(snap) {
         const dados = snap.val();
         if (dados) {
             for (const dataKey in dados) {
@@ -239,8 +261,9 @@ function fecharFormAluno() {
 function salvarAluno() {
     const nome = document.getElementById('aluno-nome-input').value.trim();
     if (!nome) { alert('Digite o nome do aluno.'); return; }
-    db.ref('alunos').push({ nome: nome }).then(function() {
+    db.ref('alunos/' + anoAtual).push({ nome: nome }).then(function() {
         fecharFormAluno();
+        mostrarToast('Aluno adicionado ao ' + anoAtual + '° Ano');
     }).catch(function(err) {
         alert('Erro ao salvar aluno: ' + err.message);
     });
@@ -249,6 +272,10 @@ function salvarAluno() {
 function renderizarAlunos() {
     const lista = document.getElementById('alunos-lista');
     lista.innerHTML = '';
+    if (alunos.length === 0) {
+        lista.innerHTML = '<p class="empty-msg">Nenhum aluno cadastrado neste ano.</p>';
+        return;
+    }
     alunos.forEach(function(a) {
         const div = document.createElement('div');
         div.className = 'admin-aluno';
@@ -263,7 +290,20 @@ function renderizarAlunos() {
 
 function excluirAluno(id) {
     if (!confirm('Excluir este aluno?')) return;
-    db.ref('alunos/' + id).remove();
+    db.ref('alunos/' + anoAtual + '/' + id).remove();
+}
+
+function mostrarToast(msg) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 3000);
 }
 
 function sair() {
@@ -280,5 +320,7 @@ window.excluirAluno = excluirAluno;
 window.marcarStatus = marcarStatus;
 window.salvarChamada = salvarChamada;
 window.sair = sair;
+window.mudarAno = mudarAno;
+window.mudarSection = mudarSection;
 
 verificarSessao();
