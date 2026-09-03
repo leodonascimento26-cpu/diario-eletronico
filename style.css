@@ -387,6 +387,70 @@ footer {
     padding: 20px 0;
 }
 
+.data-chamada {
+    font-weight: bold;
+    color: #004a99;
+    margin-bottom: 10px;
+}
+
+.sucesso {
+    color: #27ae60;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.chamada-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chamada-nome {
+    font-weight: bold;
+    color: #333;
+}
+
+.chamada-opcoes {
+    display: flex;
+    gap: 10px;
+}
+
+.opcao {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid #d0e3f7;
+    font-weight: bold;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.opcao input {
+    cursor: pointer;
+}
+
+.opcao.selecionado-presente {
+    background: #d4efdf;
+    border-color: #27ae60;
+    color: #1e8449;
+}
+
+.opcao.selecionado-falta {
+    background: #fadbd8;
+    border-color: #e74c3c;
+    color: #c0392b;
+}
+
 @media (max-width: 600px) {
     .frequencia-info {
         grid-template-columns: repeat(2, 1fr);
