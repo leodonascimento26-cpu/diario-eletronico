@@ -37,6 +37,13 @@ nav {
     padding: 10px 0;
 }
 
+nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
 nav ul {
     list-style: none;
     display: flex;
@@ -54,6 +61,23 @@ nav a {
 
 nav a:hover, nav a.active {
     background: #0072e5;
+}
+
+.btn-sair {
+    position: absolute;
+    right: 20px;
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-sair:hover {
+    background: #c0392b;
 }
 
 main {

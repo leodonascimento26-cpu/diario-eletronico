@@ -1,5 +1,6 @@
 const USUARIO = 'Almada Lima Filho';
 const SENHA = 'Almada Filho2026';
+const LOGADO_KEY = 'diario_logado_2026';
 
 document.querySelectorAll('nav a').forEach(link => {
     link.addEventListener('click', function(e) {
@@ -14,13 +15,24 @@ function entrar() {
     const erro = document.getElementById('login-erro');
 
     if (userInput.value.trim() === USUARIO && senhaInput.value === SENHA) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('conteudo-principal').style.display = 'block';
-        mostrarData();
-        iniciarFirebase();
+        localStorage.setItem(LOGADO_KEY, '1');
+        mostrarConteudo();
     } else {
         erro.style.display = 'block';
         senhaInput.value = '';
+    }
+}
+
+function mostrarConteudo() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('conteudo-principal').style.display = 'block';
+    mostrarData();
+    iniciarFirebase();
+}
+
+function verificarSessao() {
+    if (localStorage.getItem(LOGADO_KEY) === '1') {
+        mostrarConteudo();
     }
 }
 
@@ -293,3 +305,13 @@ window.excluirAluno = excluirAluno;
 window.marcarStatus = marcarStatus;
 window.salvarChamada = salvarChamada;
 window.entrar = entrar;
+window.sair = sair;
+
+function sair() {
+    localStorage.removeItem(LOGADO_KEY);
+    document.getElementById('conteudo-principal').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('senha-input').value = '';
+}
+
+verificarSessao();
