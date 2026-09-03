@@ -142,6 +142,10 @@ function renderizarChamada() {
                     <input type="radio" name="aluno-${item.id}" value="falta" ${item.status === 'falta' ? 'checked' : ''}
                         onchange="marcarStatus('${item.id}', 'falta')"> Falta
                 </label>
+                <label class="opcao ${item.status === 'justificada' ? 'selecionado-justificada' : ''}">
+                    <input type="radio" name="aluno-${item.id}" value="justificada" ${item.status === 'justificada' ? 'checked' : ''}
+                        onchange="marcarStatus('${item.id}', 'justificada')"> Falta Justificada
+                </label>
             </div>
         `;
         lista.appendChild(div);
@@ -160,9 +164,11 @@ function atualizarEstiloRadio(id, status) {
     const labels = document.querySelectorAll(`input[name="aluno-${id}"]`);
     labels.forEach(r => {
         const label = r.closest('.opcao');
-        label.classList.remove('selecionado-presente', 'selecionado-falta');
+        label.classList.remove('selecionado-presente', 'selecionado-falta', 'selecionado-justificada');
         if (r.value === status) {
-            label.classList.add(status === 'presente' ? 'selecionado-presente' : 'selecionado-falta');
+            if (status === 'presente') label.classList.add('selecionado-presente');
+            else if (status === 'falta') label.classList.add('selecionado-falta');
+            else if (status === 'justificada') label.classList.add('selecionado-justificada');
         }
     });
 }
@@ -198,7 +204,7 @@ async function renderizarResumo() {
     const { collection, getDocs } = window.fb;
 
     const contagem = {};
-    alunos.forEach(a => contagem[a.id] = { nome: a.nome, presencas: 0, faltas: 0 });
+    alunos.forEach(a => contagem[a.id] = { nome: a.nome, presencas: 0, faltas: 0, justificadas: 0 });
 
     try {
         const snap = await getDocs(collection(db, 'chamadas'));
@@ -208,6 +214,7 @@ async function renderizarResumo() {
                 if (contagem[r.id]) {
                     if (r.status === 'presente') contagem[r.id].presencas++;
                     else if (r.status === 'falta') contagem[r.id].faltas++;
+                    else if (r.status === 'justificada') contagem[r.id].justificadas++;
                 }
             });
         });
@@ -217,13 +224,15 @@ async function renderizarResumo() {
 
     alunos.forEach(a => {
         const c = contagem[a.id];
-        const total = c.presencas + c.faltas;
-        const perc = total > 0 ? (c.presencas / total * 100).toFixed(1) + '%' : '-';
+        const presencas = c.presencas + c.justificadas;
+        const diasLetivos = presencas + c.faltas;
+        const perc = diasLetivos > 0 ? (presencas / diasLetivos * 100).toFixed(1) + '%' : '-';
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${c.nome}</td>
             <td>${c.presencas}</td>
             <td>${c.faltas}</td>
+            <td>${c.justificadas}</td>
             <td><strong>${perc}</strong></td>
         `;
         tbody.appendChild(tr);

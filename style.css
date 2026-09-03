@@ -451,6 +451,12 @@ footer {
     color: #c0392b;
 }
 
+.opcao.selecionado-justificada {
+    background: #fdebd0;
+    border-color: #f39c12;
+    color: #d35400;
+}
+
 @media (max-width: 600px) {
     .frequencia-info {
         grid-template-columns: repeat(2, 1fr);
