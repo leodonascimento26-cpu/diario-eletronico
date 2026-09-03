@@ -2,6 +2,7 @@ const USUARIO = 'Almada Lima Filho';
 const SENHA = 'Almada Filho2026';
 const LOGADO_KEY = 'diario_logado_2026';
 const ANO_KEY = 'diario_ano_selecionado';
+const DIA_KEY = 'diario_dia_selecionado';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBT-wTmA3N1izSfKQd3e2Gv5q_dXF94W-g",
@@ -20,6 +21,7 @@ let anoAtual = 6;
 let alunos = [];
 let chamadaHoje = [];
 let chamadaSalva = null;
+let dataSelecionada = null;
 
 function mostrarData() {
     const hoje = new Date();
@@ -27,9 +29,60 @@ function mostrarData() {
     document.getElementById('data-hoje').textContent = dataStr.charAt(0).toUpperCase() + dataStr.slice(1);
 }
 
-function hojeKey() {
-    const d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function dataParaStr(data) {
+    const y = data.getFullYear();
+    const m = String(data.getMonth() + 1).padStart(2, '0');
+    const d = String(data.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + d;
+}
+
+function strParaData(str) {
+    const partes = str.split('-');
+    return new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+}
+
+function diasUteisDoAno() {
+    const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dec'];
+    const hoje = new Date();
+    let html = '';
+
+    for (let m = 0; m < 12; m++) {
+        const dataMes = new Date(hoje.getFullYear(), m, 1);
+        const nomeMes = meses[m] + '/' + hoje.getFullYear();
+        const totalDias = new Date(hoje.getFullYear(), m + 1, 0).getDate();
+        const diasUteisMes = [];
+
+        for (let d = 1; d <= totalDias; d++) {
+            const dataDia = new Date(hoje.getFullYear(), m, d);
+            const diaSemana = dataDia.getDay();
+            if (diaSemana >= 1 && diaSemana <= 4) {
+                diasUteisMes.push({
+                    dia: d,
+                    dataStr: dataParaStr(dataDia),
+                    diaSemana: diaSemana,
+                    ativo: true
+                });
+            }
+        }
+
+        html += '<div class="mes-section">';
+        html += '<h3 class="mes-titulo">' + nomeMes + '</h3>';
+        html += '<div class="dias-grid">';
+
+        diasUteisMes.forEach(function(info) {
+            const nomeDia = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'][info.diaSemana];
+            const jaSelecionado = dataSelecionada && dataSelecionada === info.dataStr;
+            html += '<div class="dia-item ' + (jaSelecionado ? 'dia-selecionado' : '') + '" onclick="selecionarDia(\'' + info.dataStr + '\', this)">';
+            html += '<span class="dia-nome">' + nomeDia + '</span>';
+            html += '<span class="dia-numero">' + info.dia + '</span>';
+            html += '</div>';
+        });
+
+        html += '</div>';
+        html += '</div>';
+    }
+
+    return html;
 }
 
 function entrar() {
@@ -50,11 +103,19 @@ function mostrarConteudo() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('conteudo-principal').style.display = 'block';
     mostrarData();
-    const salvo = localStorage.getItem(ANO_KEY);
-    if (salvo) {
-        anoAtual = parseInt(salvo, 10);
-    }
+
+    const anoSalvo = localStorage.getItem(ANO_KEY);
+    const diaSalvo = localStorage.getItem(DIA_KEY);
+    if (anoSalvo) anoAtual = parseInt(anoSalvo, 10);
+
+    const hoje = new Date();
+    const pad = String(hoje.getFullYear()) + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-';
+    const diaDefault = diaSalvo || pad + String(hoje.getDate()).padStart(2, '0');
+    dataSelecionada = diaDefault;
+    document.getElementById('dia-selecionado').textContent = 'Dia: ' + diaDefault;
+
     aplicarAnoSelecionado();
+    gerarCalendario();
     carregarAlunos();
 }
 
@@ -78,14 +139,16 @@ function mudarAno(ano, el) {
     document.querySelectorAll('.ano-tab').forEach(function(t) { t.classList.remove('active'); });
     if (el) el.classList.add('active');
     aplicarAnoSelecionado();
+    gerarCalendario();
     carregarAlunos();
 }
 
 function aplicarAnoSelecionado() {
-    const rotulo = anoAtual + '° Ano';
+    const rotulo = anoAtual + ' Ano';
     document.getElementById('ano-badge').textContent = rotulo;
     document.getElementById('ano-badge-resumo').textContent = rotulo;
     document.getElementById('ano-badge-alunos').textContent = rotulo;
+    document.getElementById('ano-badge-cal').textContent = rotulo;
     document.querySelectorAll('.ano-tab').forEach(function(t) {
         t.classList.toggle('active', parseInt(t.dataset.ano, 10) === anoAtual);
     });
@@ -98,6 +161,24 @@ function mudarSection(section, el) {
     if (el) el.classList.add('active');
 }
 
+function selecionarDia(dataStr, el) {
+    dataSelecionada = dataStr;
+    localStorage.setItem(DIA_KEY, dataStr);
+
+    document.querySelectorAll('.dia-item').forEach(function(d) {
+        d.classList.remove('dia-selecionado');
+    });
+    if (el) el.classList.add('dia-selecionado');
+
+    document.getElementById('dia-selecionado').textContent = 'Dia: ' + dataStr;
+    mudarSection('chamada', document.querySelector('nav a[data-section="chamada"]'));
+    carregarChamadaPorData(dataStr);
+}
+
+function gerarCalendario() {
+    document.getElementById('meses-container').innerHTML = diasUteisDoAno();
+}
+
 function carregarAlunos() {
     db.ref('alunos/' + anoAtual).on('value', function(snapshot) {
         alunos = [];
@@ -105,15 +186,22 @@ function carregarAlunos() {
             alunos.push({ id: child.key, nome: child.val().nome });
         });
         renderizarAlunos();
-        carregarChamadaHoje();
+        if (dataSelecionada) {
+            carregarChamadaPorData(dataSelecionada);
+        }
     });
 }
 
-function carregarChamadaHoje() {
-    const key = hojeKey();
+function carregarChamadaPorData(dataStr) {
+    const key = dataStr;
     chamadaHoje = alunos.map(function(a) {
         return { id: a.id, nome: a.nome, status: 'presente' };
     });
+
+    if (alunos.length === 0) {
+        renderizarChamada();
+        return;
+    }
 
     db.ref('chamadas/' + anoAtual + '/' + key).once('value').then(function(snap) {
         const existente = snap.val();
@@ -153,15 +241,15 @@ function renderizarChamada() {
             '<div class="chamada-opcoes">' +
                 '<label class="opcao ' + (item.status === 'presente' ? 'selecionado-presente' : '') + '">' +
                     '<input type="radio" name="aluno-' + item.id + '" value="presente" ' + (item.status === 'presente' ? 'checked' : '') +
-                        ' onchange="marcarStatus(\'' + item.id + '\', \'presente\')"> Presente' +
+                        ' onchange="marcarStatus(\'' + item.id + '\', \'presente\')"> P' +
                 '</label>' +
                 '<label class="opcao ' + (item.status === 'falta' ? 'selecionado-falta' : '') + '">' +
                     '<input type="radio" name="aluno-' + item.id + '" value="falta" ' + (item.status === 'falta' ? 'checked' : '') +
-                        ' onchange="marcarStatus(\'' + item.id + '\', \'falta\')"> Falta' +
+                        ' onchange="marcarStatus(\'' + item.id + '\', \'falta\')"> F' +
                 '</label>' +
                 '<label class="opcao ' + (item.status === 'justificada' ? 'selecionado-justificada' : '') + '">' +
                     '<input type="radio" name="aluno-' + item.id + '" value="justificada" ' + (item.status === 'justificada' ? 'checked' : '') +
-                        ' onchange="marcarStatus(\'' + item.id + '\', \'justificada\')"> Falta Justificada' +
+                        ' onchange="marcarStatus(\'' + item.id + '\', \'justificada\')"> J' +
                 '</label>' +
             '</div>';
         lista.appendChild(div);
@@ -191,8 +279,9 @@ function atualizarEstiloRadio(id, status) {
 
 function salvarChamada() {
     if (chamadaHoje.length === 0) { alert('Nao ha alunos para fazer a chamada neste ano.'); return; }
+    if (!dataSelecionada) { alert('Selecione um dia no calendario.'); return; }
 
-    const key = hojeKey();
+    const key = dataSelecionada;
     const registros = {};
     chamadaHoje.forEach(function(i) { registros[i.id] = i.status; });
 
@@ -263,7 +352,7 @@ function salvarAluno() {
     if (!nome) { alert('Digite o nome do aluno.'); return; }
     db.ref('alunos/' + anoAtual).push({ nome: nome }).then(function() {
         fecharFormAluno();
-        mostrarToast('Aluno adicionado ao ' + anoAtual + '° Ano');
+        mostrarToast('Aluno adicionado ao ' + anoAtual + ' Ano');
     }).catch(function(err) {
         alert('Erro ao salvar aluno: ' + err.message);
     });
@@ -313,6 +402,7 @@ function sair() {
     document.getElementById('senha-input').value = '';
 }
 
+window.selecionarDia = selecionarDia;
 window.mostrarFormAluno = mostrarFormAluno;
 window.fecharFormAluno = fecharFormAluno;
 window.salvarAluno = salvarAluno;

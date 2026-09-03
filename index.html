@@ -12,7 +12,7 @@
             <div class="header-top">
                 <div class="header-logo">
                     <h1>U.I. Dr. Almada Lima Filho</h1>
-                    <p>Chamada Escolar - Chapadinha, Maranhão</p>
+                    <p>Chamada Escolar - Chapadinha, Maranhao</p>
                 </div>
                 <button class="btn-sair" onclick="sair()">Sair</button>
             </div>
@@ -23,27 +23,27 @@
         <div class="login-box">
             <div class="login-icon">&#128214;</div>
             <h2>Acesso Restrito</h2>
-            <p>Entre com seu usuário e senha.</p>
-            <input type="text" id="usuario-input" placeholder="Usuário">
+            <p>Entre com seu usuario e senha.</p>
+            <input type="text" id="usuario-input" placeholder="Usuario">
             <input type="password" id="senha-input" placeholder="Senha">
             <button id="entrar-btn">Entrar</button>
-            <p id="login-erro" class="erro" style="display:none;">Usuário ou senha incorretos.</p>
+            <p id="login-erro" class="erro" style="display:none;">Usuario ou senha incorretos.</p>
         </div>
     </div>
 
     <div id="conteudo-principal" style="display:none;">
 
     <div class="ano-tabs">
-        <button class="ano-tab active" data-ano="6" onclick="mudarAno(6, this)">6° Ano</button>
-        <button class="ano-tab" data-ano="7" onclick="mudarAno(7, this)">7° Ano</button>
-        <button class="ano-tab" data-ano="8" onclick="mudarAno(8, this)">8° Ano</button>
-        <button class="ano-tab" data-ano="9" onclick="mudarAno(9, this)">9° Ano</button>
+        <button class="ano-tab active" data-ano="6" onclick="mudarAno(6, this)">6 Ano</button>
+        <button class="ano-tab" data-ano="7" onclick="mudarAno(7, this)">7 Ano</button>
+        <button class="ano-tab" data-ano="8" onclick="mudarAno(8, this)">8 Ano</button>
+        <button class="ano-tab" data-ano="9" onclick="mudarAno(9, this)">9 Ano</button>
     </div>
 
     <nav>
         <div class="container">
             <ul>
-                <li><a href="#chamada" class="active" data-section="chamada" onclick="mudarSection('chamada', this)">Chamada</a></li>
+                <li><a href="#calendario" class="active" data-section="calendario" onclick="mudarSection('calendario', this)">Calendario</a></li>
                 <li><a href="#resumo" data-section="resumo" onclick="mudarSection('resumo', this)">Resumo</a></li>
                 <li><a href="#alunos" data-section="alunos" onclick="mudarSection('alunos', this)">Alunos</a></li>
             </ul>
@@ -51,12 +51,21 @@
     </nav>
 
     <main class="container">
-        <section id="chamada">
+        <section id="calendario">
             <div class="section-header">
-                <h2>Chamada de Hoje</h2>
-                <span class="ano-badge" id="ano-badge">6° Ano</span>
+                <h2>Calendario</h2>
+                <span class="ano-badge" id="ano-badge-cal">6 Ano</span>
+            </div>
+            <div class="meses-container" id="meses-container"></div>
+        </section>
+
+        <section id="chamada" style="display:none;">
+            <div class="section-header">
+                <h2>Chamada</h2>
+                <span class="ano-badge" id="ano-badge">6 Ano</span>
             </div>
             <p class="data-chamada" id="data-hoje"></p>
+            <p class="dia-selecionado" id="dia-selecionado"></p>
 
             <div id="chamada-lista"></div>
 
@@ -68,18 +77,18 @@
 
         <section id="resumo" style="display:none;">
             <div class="section-header">
-                <h2>Resumo de Frequência</h2>
-                <span class="ano-badge" id="ano-badge-resumo">6° Ano</span>
+                <h2>Resumo de Frequencia</h2>
+                <span class="ano-badge" id="ano-badge-resumo">6 Ano</span>
             </div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Aluno</th>
-                            <th>Presenças</th>
+                            <th>Presencas</th>
                             <th>Faltas</th>
                             <th>Faltas Justif.</th>
-                            <th>Frequência</th>
+                            <th>Frequencia</th>
                         </tr>
                     </thead>
                     <tbody id="resumo-body"></tbody>
@@ -90,7 +99,7 @@
         <section id="alunos" style="display:none;">
             <div class="section-header">
                 <h2>Alunos</h2>
-                <span class="ano-badge" id="ano-badge-alunos">6° Ano</span>
+                <span class="ano-badge" id="ano-badge-alunos">6 Ano</span>
             </div>
             <div class="admin-cards">
                 <button class="btn-add" onclick="mostrarFormAluno()">+ Adicionar Aluno</button>

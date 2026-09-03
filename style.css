@@ -469,6 +469,76 @@ tr:nth-child(even) {
     background: #c0392b;
 }
 
+.meses-container {
+    margin-top: 8px;
+}
+
+.mes-section {
+    margin-bottom: 18px;
+}
+
+.mes-titulo {
+    color: #003a70;
+    font-size: 0.95em;
+    font-weight: 700;
+    padding: 8px 0 6px;
+    border-bottom: 1px solid #e7edf4;
+    margin-bottom: 6px;
+}
+
+.dias-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dia-item {
+    width: 52px;
+    height: 50px;
+    background: #f7f9fc;
+    border: 2px solid #e7edf4;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.dia-item:hover {
+    border-color: #0056b3;
+    background: #eef3fb;
+}
+
+.dia-item.dia-selecionado {
+    border-color: #0056b3;
+    background: #0056b3;
+    box-shadow: 0 4px 12px rgba(0,86,179,0.3);
+    transform: scale(1.05);
+}
+
+.dia-item.dia-selecionado .dia-nome,
+.dia-item.dia-selecionado .dia-numero {
+    color: white;
+}
+
+.dia-nome {
+    font-size: 0.65em;
+    color: #7a8a9a;
+    font-weight: 600;
+}
+
+.dia-numero {
+    font-size: 1em;
+    font-weight: 700;
+    color: #1a2634;
+}
+
+/* Calendario full week indicator */
+.dia-item[data-dia-semana="1"] { /* Segunda - destaque leve */
+}
+
 footer {
     background: #003a70;
     color: white;
