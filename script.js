@@ -70,7 +70,7 @@ function hojeKey() {
 async function iniciarFirebase() {
     try {
         const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        const fb = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        const fb = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
         window.fb = fb;
 
         const firebaseConfig = {
@@ -80,18 +80,21 @@ async function iniciarFirebase() {
             storageBucket: "diario-escola-178a4.firebasestorage.app",
             messagingSenderId: "998584397283",
             appId: "1:998584397283:web:7a8a405df30644a0e4c4d6",
-            measurementId: "G-HCG2MF8HD2"
+            measurementId: "G-HCG2MF8HD2",
+            databaseURL: "https://diario-escola-178a4-default-rtdb.firebaseio.com"
         };
 
         const app = initializeApp(firebaseConfig);
-        const { getFirestore } = window.fb;
-        db = getFirestore(app);
+        const { getDatabase } = window.fb;
+        db = getDatabase(app);
 
-        const { collection, onSnapshot } = window.fb;
+        const { ref, on } = window.fb;
 
-        onSnapshot(collection(db, 'alunos'), (snap) => {
+        on(ref(db, 'alunos'), 'value', (snapshot) => {
             alunos = [];
-            snap.forEach(d => alunos.push({ id: d.id, ...d.data() }));
+            snapshot.forEach(child => {
+                alunos.push({ id: child.key, nome: child.val().nome });
+            });
             renderizarAlunos();
             carregarChamadaHoje();
         });
@@ -102,22 +105,19 @@ async function iniciarFirebase() {
 }
 
 async function carregarChamadaHoje() {
-    const { collection, getDocs } = window.fb;
+    const { get } = window.fb;
     const key = hojeKey();
     chamadaHoje = alunos.map(a => ({ id: a.id, nome: a.nome, status: 'presente' }));
 
     try {
-        const snap = await getDocs(collection(db, 'chamadas'));
-        let existente = null;
-        snap.forEach(d => {
-            if (d.data().data === key) existente = { id: d.id, ...d.data() };
-        });
+        const snap = await get(ref(db, 'chamadas/' + key));
+        const existente = snap.val();
 
-        if (existente) {
-            chamadaSalva = existente;
+        if (existente && existente.registros) {
+            chamadaSalva = { data: key, registros: existente.registros };
             chamadaHoje = chamadaHoje.map(item => {
-                const reg = existente.registros.find(r => r.id === item.id);
-                return reg ? { ...item, status: reg.status } : item;
+                const statusSalvo = existente.registros[item.id];
+                return statusSalvo !== undefined ? { ...item, status: statusSalvo } : item;
             });
         } else {
             chamadaSalva = null;
@@ -189,16 +189,14 @@ async function salvarChamada() {
     if (!db) { alert('Banco de dados ainda não carregado.'); return; }
     if (chamadaHoje.length === 0) { alert('Não há alunos para fazer a chamada.'); return; }
 
-    const { collection, addDoc, updateDoc, doc } = window.fb;
+    const { ref, set } = window.fb;
     const key = hojeKey();
-    const registros = chamadaHoje.map(i => ({ id: i.id, nome: i.nome, status: i.status }));
+    const registros = {};
+    chamadaHoje.forEach(i => registros[i.id] = i.status);
 
     try {
-        if (chamadaSalva) {
-            await updateDoc(doc(db, 'chamadas', chamadaSalva.id), { data: key, registros });
-        } else {
-            await addDoc(collection(db, 'chamadas'), { data: key, registros });
-        }
+        await set(ref(db, 'chamadas/' + key), { data: key, registros: registros });
+        chamadaSalva = { data: key, registros: registros };
         const msg = document.getElementById('chamada-msg');
         msg.style.display = 'block';
         setTimeout(() => msg.style.display = 'none', 3000);
@@ -213,23 +211,27 @@ async function renderizarResumo() {
     const tbody = document.getElementById('resumo-body');
     tbody.innerHTML = '';
 
-    const { collection, getDocs } = window.fb;
+    const { get } = window.fb;
 
     const contagem = {};
     alunos.forEach(a => contagem[a.id] = { nome: a.nome, presencas: 0, faltas: 0, justificadas: 0 });
 
     try {
-        const snap = await getDocs(collection(db, 'chamadas'));
-        snap.forEach(d => {
-            const regs = d.data().registros || [];
-            regs.forEach(r => {
-                if (contagem[r.id]) {
-                    if (r.status === 'presente') contagem[r.id].presencas++;
-                    else if (r.status === 'falta') contagem[r.id].faltas++;
-                    else if (r.status === 'justificada') contagem[r.id].justificadas++;
+        const snap = await get(ref(db, 'chamadas'));
+        const dados = snap.val();
+        if (dados) {
+            for (const dataKey in dados) {
+                const regs = dados[dataKey].registros || {};
+                for (const alunoId in regs) {
+                    const status = regs[alunoId];
+                    if (contagem[alunoId]) {
+                        if (status === 'presente') contagem[alunoId].presencas++;
+                        else if (status === 'falta') contagem[alunoId].faltas++;
+                        else if (status === 'justificada') contagem[alunoId].justificadas++;
+                    }
                 }
-            });
-        });
+            }
+        }
     } catch (err) {
         console.error('Erro ao carregar resumo:', err);
     }
@@ -268,8 +270,8 @@ async function salvarAluno() {
         alert('Digite o nome do aluno.');
         return;
     }
-    const { collection, addDoc } = window.fb;
-    await addDoc(collection(db, 'alunos'), { nome });
+    const { ref, push } = window.fb;
+    await push(ref(db, 'alunos'), { nome });
     fecharFormAluno();
 }
 
@@ -294,8 +296,8 @@ function renderizarAlunos() {
 async function excluirAluno(id) {
     if (!db) return;
     if (!confirm('Excluir este aluno?')) return;
-    const { deleteDoc, doc } = window.fb;
-    await deleteDoc(doc(db, 'alunos', id));
+    const { ref, set } = window.fb;
+    await set(ref(db, 'alunos/' + id), null);
 }
 
 window.mostrarFormAluno = mostrarFormAluno;
