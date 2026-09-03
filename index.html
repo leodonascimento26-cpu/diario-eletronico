@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U.I. Dr. Almada Lima Filho - Diário Eletrônico</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>U.I. Dr. Almada Lima Filho</h1>
+            <p>Diário Eletrônico Escolar - Chapadinha, Maranhão</p>
+        </div>
+    </header>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>Acesso Restrito</h2>
+            <p>Entre com seu usuário e senha.</p>
+            <input type="text" id="usuario-input" placeholder="Usuário">
+            <input type="password" id="senha-input" placeholder="Senha">
+            <button id="entrar-btn">Entrar</button>
+            <p id="login-erro" class="erro" style="display:none;">Usuário ou senha incorretos.</p>
+        </div>
+    </div>
+
+    <div id="conteudo-principal" style="display:none;">
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#home" class="active">Início</a></li>
+                <li><a href="#notas">Notas</a></li>
+                <li><a href="#frequencia">Frequência</a></li>
+                <li><a href="#avisos">Avisos</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section id="home">
+            <h2>Bem-vindo ao Diário Eletrônico</h2>
+            <p>Acesse suas notas, frequência e fique por dentro dos avisos da escola.</p>
+        </section>
+
+        <section id="notas">
+            <h2>Notas</h2>
+            <p class="aluno-nome" id="aluno-nome"></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Disciplina</th>
+                        <th>1° Bimestre</th>
+                        <th>2° Bimestre</th>
+                        <th>3° Bimestre</th>
+                        <th>4° Bimestre</th>
+                        <th>Média</th>
+                    </tr>
+                </thead>
+                <tbody id="notas-body"></tbody>
+            </table>
+        </section>
+
+        <section id="frequencia">
+            <h2>Frequência</h2>
+            <div class="frequencia-info">
+                <div class="card" id="card-dias">
+                    <h3>Dias Letivos</h3>
+                    <p class="numero"></p>
+                </div>
+                <div class="card" id="card-presencas">
+                    <h3>Presenças</h3>
+                    <p class="numero"></p>
+                </div>
+                <div class="card" id="card-faltas">
+                    <h3>Faltas</h3>
+                    <p class="numero"></p>
+                </div>
+                <div class="card" id="card-frequencia">
+                    <h3>Frequência</h3>
+                    <p class="numero"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="avisos">
+            <h2>Avisos</h2>
+            <div id="avisos-lista"></div>
+        </section>
+    </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 U.I. Dr. Almada Lima Filho - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
