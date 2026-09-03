@@ -221,6 +221,165 @@ tr:nth-child(even) {
     margin-bottom: 0;
 }
 
+.admin-nota {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.admin-cards {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.btn-add {
+    padding: 12px 20px;
+    background: #0072e5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-add:hover {
+    background: #004a99;
+}
+
+#form-aluno, #form-aviso {
+    background: #f0f4f8;
+    border: 1px solid #d0e3f7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+#form-aluno h3, #form-aviso h3 {
+    color: #004a99;
+    margin-bottom: 15px;
+}
+
+#form-aluno label, #form-aviso label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0 5px;
+}
+
+#form-aluno input, #form-aviso input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #d0e3f7;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+#form-aluno input:focus, #form-aviso input:focus {
+    outline: none;
+    border-color: #0072e5;
+}
+
+.notas-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-salvar {
+    padding: 12px 20px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.btn-salvar:hover {
+    background: #1e8449;
+}
+
+.btn-cancelar {
+    padding: 12px 20px;
+    background: #95a5a6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.btn-cancelar:hover {
+    background: #7f8c8d;
+}
+
+.admin-aluno {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.admin-aluno-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-aluno-info span {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.admin-aluno-acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-editar {
+    padding: 8px 14px;
+    background: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-editar:hover {
+    background: #d68910;
+}
+
+.btn-excluir, .btn-del {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-excluir:hover, .btn-del:hover {
+    background: #c0392b;
+}
+
+.aviso .btn-del {
+    margin-top: 10px;
+}
+
 footer {
     background: #004a99;
     color: white;

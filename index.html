@@ -34,6 +34,7 @@
                 <li><a href="#notas">Notas</a></li>
                 <li><a href="#frequencia">Frequência</a></li>
                 <li><a href="#avisos">Avisos</a></li>
+                <li><a href="#admin">Administrar</a></li>
             </ul>
         </div>
     </nav>
@@ -41,20 +42,20 @@
     <main class="container">
         <section id="home">
             <h2>Bem-vindo ao Diário Eletrônico</h2>
-            <p>Acesse suas notas, frequência e fique por dentro dos avisos da escola.</p>
+            <p>Confira notas, frequência e avisos da escola.</p>
         </section>
 
         <section id="notas">
             <h2>Notas</h2>
-            <p class="aluno-nome" id="aluno-nome"></p>
             <table>
                 <thead>
                     <tr>
+                        <th>Aluno</th>
                         <th>Disciplina</th>
-                        <th>1° Bimestre</th>
-                        <th>2° Bimestre</th>
-                        <th>3° Bimestre</th>
-                        <th>4° Bimestre</th>
+                        <th>1° Bim</th>
+                        <th>2° Bim</th>
+                        <th>3° Bim</th>
+                        <th>4° Bim</th>
                         <th>Média</th>
                     </tr>
                 </thead>
@@ -64,29 +65,72 @@
 
         <section id="frequencia">
             <h2>Frequência</h2>
-            <div class="frequencia-info">
-                <div class="card" id="card-dias">
-                    <h3>Dias Letivos</h3>
-                    <p class="numero"></p>
-                </div>
-                <div class="card" id="card-presencas">
-                    <h3>Presenças</h3>
-                    <p class="numero"></p>
-                </div>
-                <div class="card" id="card-faltas">
-                    <h3>Faltas</h3>
-                    <p class="numero"></p>
-                </div>
-                <div class="card" id="card-frequencia">
-                    <h3>Frequência</h3>
-                    <p class="numero"></p>
-                </div>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Dias Letivos</th>
+                        <th>Presenças</th>
+                        <th>Faltas</th>
+                        <th>Frequência</th>
+                    </tr>
+                </thead>
+                <tbody id="frequencia-body"></tbody>
+            </table>
         </section>
 
         <section id="avisos">
             <h2>Avisos</h2>
             <div id="avisos-lista"></div>
+        </section>
+
+        <section id="admin">
+            <h2>Painel de Administração</h2>
+            <p class="admin-nota">Adicione ou edite alunos abaixo. Os dados são salvos na nuvem.</p>
+
+            <div class="admin-cards">
+                <button class="btn-add" onclick="abrirFormAluno()">+ Adicionar Aluno</button>
+                <button class="btn-add" onclick="abrirFormAviso()">+ Adicionar Aviso</button>
+            </div>
+
+            <div id="form-aluno" style="display:none;">
+                <h3>Dados do Aluno</h3>
+                <label>Nome do Aluno</label>
+                <input type="text" id="aluno-nome-input" placeholder="Nome completo">
+                <label>Disciplina</label>
+                <input type="text" id="aluno-disciplina-input" placeholder="Ex: Matemática">
+                <div class="notas-grid">
+                    <div><label>1° Bim</label><input type="number" step="0.1" id="aluno-b1"></div>
+                    <div><label>2° Bim</label><input type="number" step="0.1" id="aluno-b2"></div>
+                    <div><label>3° Bim</label><input type="number" step="0.1" id="aluno-b3"></div>
+                    <div><label>4° Bim</label><input type="number" step="0.1" id="aluno-b4"></div>
+                </div>
+                <label>Dias Letivos</label>
+                <input type="number" id="aluno-dias" placeholder="Ex: 120">
+                <label>Presenças</label>
+                <input type="number" id="aluno-presencas" placeholder="Ex: 115">
+                <label>Faltas</label>
+                <input type="number" id="aluno-faltas" placeholder="Ex: 5">
+                <div class="form-actions">
+                    <button class="btn-salvar" onclick="salvarAluno()">Salvar Aluno</button>
+                    <button class="btn-cancelar" onclick="fecharFormAluno()">Cancelar</button>
+                </div>
+            </div>
+
+            <div id="form-aviso" style="display:none;">
+                <h3>Novo Aviso</h3>
+                <label>Título</label>
+                <input type="text" id="aviso-titulo" placeholder="Título do aviso">
+                <label>Descrição</label>
+                <input type="text" id="aviso-descricao" placeholder="Descrição">
+                <div class="form-actions">
+                    <button class="btn-salvar" onclick="salvarAviso()">Salvar Aviso</button>
+                    <button class="btn-cancelar" onclick="fecharFormAviso()">Cancelar</button>
+                </div>
+            </div>
+
+            <h3>Alunos cadastrados</h3>
+            <div id="admin-alunos-lista"></div>
         </section>
     </main>
     </div>
@@ -97,6 +141,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
