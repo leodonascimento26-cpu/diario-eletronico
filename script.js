@@ -251,9 +251,19 @@ function renderizarChamada() {
                     '<input type="radio" name="aluno-' + item.id + '" value="justificada" ' + (item.status === 'justificada' ? 'checked' : '') +
                         ' onchange="marcarStatus(\'' + item.id + '\', \'justificada\')"> J' +
                 '</label>' +
+                '<label class="opcao ' + (item.status === 'feriado' ? 'selecionado-feriado' : '') + '">' +
+                    '<input type="radio" name="aluno-' + item.id + '" value="feriado" ' + (item.status === 'feriado' ? 'checked' : '') +
+                        ' onchange="marcarStatus(\'' + item.id + '\', \'feriado\')"> Feriado' +
+                '</label>' +
             '</div>';
         lista.appendChild(div);
     });
+
+    const btnFeriado = document.createElement('button');
+    btnFeriado.className = 'btn-feriado';
+    btnFeriado.textContent = 'Marcar todos como Sem Aula / Feriado';
+    btnFeriado.onclick = marcarTodosFeriado;
+    lista.appendChild(btnFeriado);
 }
 
 function marcarStatus(id, status) {
@@ -273,6 +283,26 @@ function atualizarEstiloRadio(id, status) {
             if (status === 'presente') label.classList.add('selecionado-presente');
             else if (status === 'falta') label.classList.add('selecionado-falta');
             else if (status === 'justificada') label.classList.add('selecionado-justificada');
+            else if (status === 'feriado') label.classList.add('selecionado-feriado');
+        }
+    });
+}
+
+function marcarTodosFeriado() {
+    if (!confirm('Deseja marcar TODOS os alunos como Sem Aula / Feriado neste dia?')) return;
+    chamadaHoje.forEach(function(item) {
+        item.status = 'feriado';
+    });
+    const labels = document.querySelectorAll('#chamada-lista .opcao');
+    labels.forEach(function(label) {
+        label.classList.remove('selecionado-presente', 'selecionado-falta', 'selecionado-justificada');
+    });
+    chamadaHoje.forEach(function(item) {
+        const radio = document.querySelector('input[name="aluno-' + item.id + '"][value="feriado"]');
+        if (radio) {
+            radio.checked = true;
+            const label = radio.closest('.opcao');
+            if (label) label.classList.add('selecionado-feriado');
         }
     });
 }
