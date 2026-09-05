@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>U.I. Dr. Almada Lima Filho - Chamada Escolar</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#16213e">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,7 +16,10 @@
                     <h1>U.I. Dr. Almada Lima Filho</h1>
                     <p>Chamada Escolar - Chapadinha, Maranhao</p>
                 </div>
-                <button class="btn-sair" onclick="sair()">Sair</button>
+                <div class="header-acoes">
+                    <button class="btn-instalar" id="btn-instalar" style="display:none;">Instalar App</button>
+                    <button class="btn-sair" onclick="sair()">Sair</button>
+                </div>
             </div>
         </div>
     </header>

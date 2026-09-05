@@ -1,5 +1,5 @@
-const USUARIO = 'Almada Lima Filho';
-const SENHA = 'Almada Filho2026';
+const USUARIO = 'almada lima filho';
+const SENHA = 'filho1234';
 const LOGADO_KEY = 'diario_logado_2026';
 const ANO_KEY = 'diario_ano_selecionado';
 const DIA_KEY = 'diario_dia_selecionado';
@@ -442,5 +442,38 @@ window.salvarChamada = salvarChamada;
 window.sair = sair;
 window.mudarAno = mudarAno;
 window.mudarSection = mudarSection;
+
+var deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('btn-instalar').style.display = 'inline-block';
+});
+
+var btnInstalar = document.getElementById('btn-instalar');
+if (btnInstalar) {
+    btnInstalar.addEventListener('click', function() {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(resultado) {
+            document.getElementById('btn-instalar').style.display = 'none';
+            deferredPrompt = null;
+        });
+    });
+}
+
+window.addEventListener('appinstalled', function() {
+    document.getElementById('btn-instalar').style.display = 'none';
+    deferredPrompt = null;
+});
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').catch(function(err) {
+            console.error('Erro ao registrar service worker:', err);
+        });
+    });
+}
 
 verificarSessao();
