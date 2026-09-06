@@ -142,26 +142,29 @@ header {
 
 .senha-wrapper input {
     margin-bottom: 0;
-    padding-right: 46px;
+    padding-right: 40px;
 }
 
-.btn-olho {
+.login-box .btn-olho {
     position: absolute;
     top: 50%;
-    right: 8px;
+    right: 10px;
     transform: translateY(-50%);
     background: none;
     border: none;
-    font-size: 1.2em;
+    font-size: 1.25em;
     cursor: pointer;
     padding: 4px;
     color: #7a8a9a;
     line-height: 1;
     width: auto;
+    height: auto;
+    border-radius: 50%;
 }
 
-.btn-olho:hover {
+.login-box .btn-olho:hover {
     color: #0056b3;
+    background: none;
 }
 
 .login-box button {
