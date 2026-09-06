@@ -99,12 +99,14 @@ function entrar() {
     }
 }
 
-function alternarSenha() {
+function olhoPressionar() {
     const senhaInput = document.getElementById('senha-input');
-    const btnOlho = document.getElementById('btn-olho');
-    const mostrando = senhaInput.type === 'text';
-    senhaInput.type = mostrando ? 'password' : 'text';
-    btnOlho.textContent = mostrando ? '\u{1F441}' : '\u{1F576}\uFE0F';
+    if (senhaInput) senhaInput.type = 'text';
+}
+
+function olhoSoltar() {
+    const senhaInput = document.getElementById('senha-input');
+    if (senhaInput) senhaInput.type = 'password';
 }
 
 function mostrarConteudo() {
@@ -451,6 +453,8 @@ window.sair = sair;
 window.mudarAno = mudarAno;
 window.mudarSection = mudarSection;
 window.alternarSenha = alternarSenha;
+window.olhoPressionar = olhoPressionar;
+window.olhoSoltar = olhoSoltar;
 
 var deferredPrompt = null;
 
