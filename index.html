@@ -30,7 +30,10 @@
             <h2>Acesso Restrito</h2>
             <p>Entre com seu usuario e senha.</p>
             <input type="text" id="usuario-input" placeholder="Usuario">
-            <input type="password" id="senha-input" placeholder="Senha">
+            <div class="senha-wrapper">
+                <input type="password" id="senha-input" placeholder="Senha">
+                <button type="button" class="btn-olho" id="btn-olho" onclick="alternarSenha()" title="Mostrar/ocultar senha">&#128065;</button>
+            </div>
             <button id="entrar-btn">Entrar</button>
             <p id="login-erro" class="erro" style="display:none;">Usuario ou senha incorretos.</p>
         </div>

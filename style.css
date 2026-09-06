@@ -135,6 +135,35 @@ header {
     background: white;
 }
 
+.senha-wrapper {
+    position: relative;
+    margin-bottom: 13px;
+}
+
+.senha-wrapper input {
+    margin-bottom: 0;
+    padding-right: 46px;
+}
+
+.btn-olho {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 4px;
+    color: #7a8a9a;
+    line-height: 1;
+    width: auto;
+}
+
+.btn-olho:hover {
+    color: #0056b3;
+}
+
 .login-box button {
     width: 100%;
     padding: 13px;

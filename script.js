@@ -99,6 +99,14 @@ function entrar() {
     }
 }
 
+function alternarSenha() {
+    const senhaInput = document.getElementById('senha-input');
+    const btnOlho = document.getElementById('btn-olho');
+    const mostrando = senhaInput.type === 'text';
+    senhaInput.type = mostrando ? 'password' : 'text';
+    btnOlho.textContent = mostrando ? '\u{1F441}' : '\u{1F576}\uFE0F';
+}
+
 function mostrarConteudo() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('conteudo-principal').style.display = 'block';
@@ -442,6 +450,7 @@ window.salvarChamada = salvarChamada;
 window.sair = sair;
 window.mudarAno = mudarAno;
 window.mudarSection = mudarSection;
+window.alternarSenha = alternarSenha;
 
 var deferredPrompt = null;
 
