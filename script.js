@@ -4,6 +4,7 @@ const LOGADO_KEY = 'diario_logado_2026';
 const ANO_KEY = 'diario_ano_selecionado';
 const DIA_KEY = 'diario_dia_selecionado';
 const MES_KEY = 'diario_mes_ativo';
+const ZOOM_KEY = 'diario_zoom';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBT-wTmA3N1izSfKQd3e2Gv5q_dXF94W-g",
@@ -542,6 +543,46 @@ window.alternarTodosMes = alternarTodosMes;
 window.alternarSenha = alternarSenha;
 window.olhoPressionar = olhoPressionar;
 window.olhoSoltar = olhoSoltar;
+window.abrirConfig = abrirConfig;
+window.fecharConfig = fecharConfig;
+window.ajustarZoom = ajustarZoom;
+window.mudarZoom = mudarZoom;
+window.resetZoom = resetZoom;
+
+function zoomAtual() {
+    return parseInt(localStorage.getItem(ZOOM_KEY) || '100', 10);
+}
+
+function aplicarZoom(n) {
+    document.documentElement.style.fontSize = n + '%';
+    const range = document.getElementById('zoom-range');
+    if (range) range.value = n;
+    const valor = document.getElementById('zoom-valor');
+    if (valor) valor.textContent = n + '%';
+    localStorage.setItem(ZOOM_KEY, String(n));
+}
+
+function ajustarZoom(n) {
+    aplicarZoom(parseInt(n, 10));
+}
+
+function mudarZoom(delta) {
+    const novo = Math.min(150, Math.max(80, zoomAtual() + delta));
+    aplicarZoom(novo);
+}
+
+function resetZoom() {
+    aplicarZoom(100);
+}
+
+function abrirConfig() {
+    aplicarZoom(zoomAtual());
+    document.getElementById('config-screen').style.display = 'flex';
+}
+
+function fecharConfig() {
+    document.getElementById('config-screen').style.display = 'none';
+}
 
 var deferredPrompt = null;
 
@@ -574,6 +615,10 @@ if ('serviceWorker' in navigator) {
             console.error('Erro ao registrar service worker:', err);
         });
     });
+}
+
+if (localStorage.getItem(ZOOM_KEY)) {
+    document.documentElement.style.fontSize = zoomAtual() + '%';
 }
 
 verificarSessao();

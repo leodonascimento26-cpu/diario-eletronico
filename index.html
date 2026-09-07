@@ -17,6 +17,7 @@
                     <p>Chamada Escolar - Chapadinha, Maranhao</p>
                 </div>
                 <div class="header-acoes">
+                    <button class="btn-config" onclick="abrirConfig()" title="Configuracoes">&#9881;</button>
                     <button class="btn-instalar" id="btn-instalar" style="display:none;">Instalar App</button>
                     <button class="btn-sair" onclick="sair()">Sair</button>
                 </div>
@@ -40,6 +41,22 @@
     </div>
 
     <div id="conteudo-principal" style="display:none;">
+
+    <div id="config-screen" style="display:none;">
+        <div class="config-box">
+            <h3>Configuracoes</h3>
+            <p class="config-desc">Ajuste o tamanho das letras (zoom) do site.</p>
+            <label class="config-label" for="zoom-range">Tamanho das letras</label>
+            <div class="zoom-valor" id="zoom-valor">100%</div>
+            <input type="range" id="zoom-range" min="80" max="150" step="5" value="100" oninput="ajustarZoom(this.value)">
+            <div class="zoom-botoes">
+                <button class="btn-zoom" onclick="mudarZoom(-10)">A-</button>
+                <button class="btn-zoom" onclick="mudarZoom(10)">A+</button>
+                <button class="btn-zoom btn-zoom-padrao" onclick="resetZoom()">Padrao</button>
+            </div>
+            <button class="btn-fechar-config" onclick="fecharConfig()">Fechar</button>
+        </div>
+    </div>
 
     <div class="ano-tabs">
         <button class="ano-tab active" data-ano="6" onclick="mudarAno(6, this)">6 Ano</button>

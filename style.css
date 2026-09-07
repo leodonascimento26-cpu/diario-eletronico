@@ -80,6 +80,138 @@ header::after {
     flex-wrap: wrap;
 }
 
+.btn-config {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    font-size: 1.15em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-config:hover {
+    background: rgba(255,255,255,0.3);
+    transform: rotate(60deg);
+}
+
+#config-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,20,50,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+}
+
+.config-box {
+    background: white;
+    border-radius: 18px;
+    padding: 26px 22px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 18px 50px rgba(0,20,60,0.4);
+    animation: entradaSuave 0.3s ease-out;
+}
+
+.config-box h3 {
+    color: #003a70;
+    margin-bottom: 4px;
+    font-size: 1.25em;
+}
+
+.config-desc {
+    color: #5a6b7a;
+    font-size: 0.88em;
+    margin-bottom: 18px;
+}
+
+.config-label {
+    display: block;
+    font-weight: 600;
+    color: #3a4a5a;
+    margin-bottom: 6px;
+    font-size: 0.9em;
+}
+
+.zoom-valor {
+    font-size: 1.6em;
+    font-weight: 800;
+    color: #2a7de1;
+    margin: 6px 0 10px;
+}
+
+#zoom-range {
+    width: 100%;
+    accent-color: #2a7de1;
+    height: 32px;
+}
+
+.zoom-botoes {
+    display: flex;
+    gap: 8px;
+    margin: 14px 0 18px;
+}
+
+.btn-zoom {
+    flex: 1;
+    padding: 11px 6px;
+    border: 2px solid #dce6f0;
+    background: #f7f9fc;
+    color: #1e5fb4;
+    border-radius: 10px;
+    font-size: 0.95em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-zoom:hover {
+    background: #eef3fb;
+    border-color: #2a7de1;
+}
+
+.btn-zoom:active {
+    transform: scale(0.94);
+}
+
+.btn-zoom-padrao {
+    background: #eef2f7;
+    color: #3a4a5a;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.btn-fechar-config {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #1e5fb4, #2a7de1);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(42,125,225,0.35);
+}
+
+.btn-fechar-config:active {
+    transform: scale(0.97);
+}
+
 .btn-instalar {
     padding: 8px 16px;
     background: #27ae60;
