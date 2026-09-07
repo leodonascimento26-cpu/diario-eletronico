@@ -3,6 +3,7 @@ const SENHA = 'filho1234';
 const LOGADO_KEY = 'diario_logado_2026';
 const ANO_KEY = 'diario_ano_selecionado';
 const DIA_KEY = 'diario_dia_selecionado';
+const MES_KEY = 'diario_mes_ativo';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBT-wTmA3N1izSfKQd3e2Gv5q_dXF94W-g",
@@ -45,6 +46,7 @@ function diasUteisDoAno() {
     const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dec'];
     const hoje = new Date();
     let html = '';
+    const mesAtivo = mesSalvo();
 
     for (let m = 0; m < 12; m++) {
         const dataMes = new Date(hoje.getFullYear(), m, 1);
@@ -65,9 +67,10 @@ function diasUteisDoAno() {
             }
         }
 
-        html += '<div class="mes-section">';
+        const expandido = m === mesAtivo;
+        html += '<div class="mes-section' + (expandido ? '' : ' mes-recolhido') + '">';
         html += '<h3 class="mes-titulo" onclick="alternarMes(this)">';
-        html += '<span class="seta-mes">&#9660;</span> ' + nomeMes;
+        html += '<span class="seta-mes">' + (expandido ? '&#9660;' : '&#9654;') + '</span> ' + nomeMes;
         html += '</h3>';
         html += '<div class="dias-grid">';
 
@@ -187,14 +190,34 @@ function selecionarDia(dataStr, el) {
     carregarChamadaPorData(dataStr);
 }
 
+function mesSalvo() {
+    const salvo = localStorage.getItem(MES_KEY);
+    if (salvo === null) return new Date().getMonth();
+    return parseInt(salvo, 10);
+}
+
 function gerarCalendario() {
     document.getElementById('meses-container').innerHTML = diasUteisDoAno();
 }
 
 function alternarMes(titulo) {
     const section = titulo.closest('.mes-section');
-    const recolhido = section.classList.toggle('mes-recolhido');
-    titulo.querySelector('.seta-mes').textContent = recolhido ? '\u25B6' : '\u25BC';
+    const todas = document.querySelectorAll('#meses-container .mes-section');
+    const indice = Array.prototype.indexOf.call(todas, section);
+    const estavaRecolhido = section.classList.contains('mes-recolhido');
+
+    todas.forEach(function(s) {
+        s.classList.add('mes-recolhido');
+        s.querySelector('.seta-mes').textContent = '\u25B6';
+    });
+
+    if (estavaRecolhido) {
+        section.classList.remove('mes-recolhido');
+        section.querySelector('.seta-mes').textContent = '\u25BC';
+        localStorage.setItem(MES_KEY, String(indice));
+    } else {
+        localStorage.removeItem(MES_KEY);
+    }
 }
 
 function alternarTodosMes() {
@@ -211,6 +234,8 @@ function alternarTodosMes() {
             section.querySelector('.seta-mes').textContent = '\u25B6';
         }
     });
+
+    localStorage.removeItem(MES_KEY);
 
     if (btn) btn.textContent = primeiroRecolhido ? 'Minimizar Meses' : 'Expandir Meses';
 }
