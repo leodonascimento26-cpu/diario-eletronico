@@ -221,6 +221,9 @@ function carregarAlunos() {
         snapshot.forEach(function(child) {
             alunos.push({ id: child.key, nome: child.val().nome });
         });
+        alunos.sort(function(a, b) {
+            return a.nome.localeCompare(b.nome, 'pt', { sensitivity: 'base' });
+        });
         renderizarAlunos();
         if (dataSelecionada) {
             carregarChamadaPorData(dataSelecionada);
