@@ -326,6 +326,10 @@ function renderizarChamada() {
                     '<input type="radio" name="aluno-' + item.id + '" value="feriado" ' + (item.status === 'feriado' ? 'checked' : '') +
                         ' onchange="marcarStatus(\'' + item.id + '\', \'feriado\')"> Feriado' +
                 '</label>' +
+                '<label class="opcao ' + (item.status === 'semaula' ? 'selecionado-semaula' : '') + '">' +
+                    '<input type="radio" name="aluno-' + item.id + '" value="semaula" ' + (item.status === 'semaula' ? 'checked' : '') +
+                        ' onchange="marcarStatus(\'' + item.id + '\', \'semaula\')"> Sem Aula' +
+                '</label>' +
             '</div>';
         lista.appendChild(div);
     });
@@ -349,12 +353,13 @@ function atualizarEstiloRadio(id, status) {
     const labels = document.querySelectorAll('input[name="aluno-' + id + '"]');
     labels.forEach(function(r) {
         const label = r.closest('.opcao');
-        label.classList.remove('selecionado-presente', 'selecionado-falta', 'selecionado-justificada');
+        label.classList.remove('selecionado-presente', 'selecionado-falta', 'selecionado-justificada', 'selecionado-feriado', 'selecionado-semaula');
         if (r.value === status) {
             if (status === 'presente') label.classList.add('selecionado-presente');
             else if (status === 'falta') label.classList.add('selecionado-falta');
             else if (status === 'justificada') label.classList.add('selecionado-justificada');
             else if (status === 'feriado') label.classList.add('selecionado-feriado');
+            else if (status === 'semaula') label.classList.add('selecionado-semaula');
         }
     });
 }
@@ -366,7 +371,7 @@ function marcarTodosFeriado() {
     });
     const labels = document.querySelectorAll('#chamada-lista .opcao');
     labels.forEach(function(label) {
-        label.classList.remove('selecionado-presente', 'selecionado-falta', 'selecionado-justificada');
+        label.classList.remove('selecionado-presente', 'selecionado-falta', 'selecionado-justificada', 'selecionado-feriado', 'selecionado-semaula');
     });
     chamadaHoje.forEach(function(item) {
         const radio = document.querySelector('input[name="aluno-' + item.id + '"][value="feriado"]');

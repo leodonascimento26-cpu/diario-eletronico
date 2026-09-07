@@ -479,6 +479,12 @@ h2 {
     color: #555;
 }
 
+.opcao.selecionado-semaula {
+    background: #e3e8f0;
+    border-color: #546e7a;
+    color: #2c3e50;
+}
+
 .btn-feriado {
     width: 100%;
     padding: 14px;
