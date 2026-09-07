@@ -564,6 +564,48 @@ tr:nth-child(even) {
     padding: 8px 0 6px;
     border-bottom: 1px solid #e7edf4;
     margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.seta-mes {
+    font-size: 0.7em;
+    transition: transform 0.2s;
+}
+
+.mes-section.mes-recolhido .dias-grid {
+    display: none;
+}
+
+.mes-section.mes-recolhido .mes-titulo {
+    margin-bottom: 4px;
+}
+
+.header-controles {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-minimizar {
+    padding: 5px 12px;
+    background: #eef2f7;
+    color: #3a4a5a;
+    border: 1px solid #dce6f0;
+    border-radius: 8px;
+    font-size: 0.78em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-minimizar:hover {
+    background: #0056b3;
+    color: white;
 }
 
 .dias-grid {

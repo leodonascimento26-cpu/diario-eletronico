@@ -66,7 +66,9 @@ function diasUteisDoAno() {
         }
 
         html += '<div class="mes-section">';
-        html += '<h3 class="mes-titulo">' + nomeMes + '</h3>';
+        html += '<h3 class="mes-titulo" onclick="alternarMes(this)">';
+        html += '<span class="seta-mes">&#9660;</span> ' + nomeMes;
+        html += '</h3>';
         html += '<div class="dias-grid">';
 
         diasUteisMes.forEach(function(info) {
@@ -187,6 +189,30 @@ function selecionarDia(dataStr, el) {
 
 function gerarCalendario() {
     document.getElementById('meses-container').innerHTML = diasUteisDoAno();
+}
+
+function alternarMes(titulo) {
+    const section = titulo.closest('.mes-section');
+    const recolhido = section.classList.toggle('mes-recolhido');
+    titulo.querySelector('.seta-mes').textContent = recolhido ? '\u25B6' : '\u25BC';
+}
+
+function alternarTodosMes() {
+    const todas = document.querySelectorAll('#meses-container .mes-section');
+    const btn = document.getElementById('btn-minimizar-todos');
+    const primeiroRecolhido = todas.length > 0 && todas[0].classList.contains('mes-recolhido');
+
+    todas.forEach(function(section) {
+        if (primeiroRecolhido) {
+            section.classList.remove('mes-recolhido');
+            section.querySelector('.seta-mes').textContent = '\u25BC';
+        } else {
+            section.classList.add('mes-recolhido');
+            section.querySelector('.seta-mes').textContent = '\u25B6';
+        }
+    });
+
+    if (btn) btn.textContent = primeiroRecolhido ? 'Minimizar Meses' : 'Expandir Meses';
 }
 
 function carregarAlunos() {
@@ -452,6 +478,8 @@ window.salvarChamada = salvarChamada;
 window.sair = sair;
 window.mudarAno = mudarAno;
 window.mudarSection = mudarSection;
+window.alternarMes = alternarMes;
+window.alternarTodosMes = alternarTodosMes;
 window.alternarSenha = alternarSenha;
 window.olhoPressionar = olhoPressionar;
 window.olhoSoltar = olhoSoltar;
