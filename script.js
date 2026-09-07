@@ -221,6 +221,13 @@ function carregarAlunos() {
         snapshot.forEach(function(child) {
             alunos.push({ id: child.key, nome: child.val().nome });
         });
+        const vistos = {};
+        alunos = alunos.filter(function(a) {
+            const chave = a.nome.trim().toLowerCase();
+            if (vistos[chave]) return false;
+            vistos[chave] = true;
+            return true;
+        });
         alunos.sort(function(a, b) {
             return a.nome.localeCompare(b.nome, 'pt', { sensitivity: 'base' });
         });
@@ -419,6 +426,15 @@ function fecharFormAluno() {
 function salvarAluno() {
     const nome = document.getElementById('aluno-nome-input').value.trim();
     if (!nome) { alert('Digite o nome do aluno.'); return; }
+
+    const jaExiste = alunos.some(function(a) {
+        return a.nome.localeCompare(nome, 'pt', { sensitivity: 'base' }) === 0;
+    });
+    if (jaExiste) {
+        alert('Este aluno ja esta cadastrado neste ano.');
+        return;
+    }
+
     db.ref('alunos/' + anoAtual).push({ nome: nome }).then(function() {
         fecharFormAluno();
         mostrarToast('Aluno adicionado ao ' + anoAtual + ' Ano');
