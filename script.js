@@ -283,7 +283,7 @@ function renderizarChamada() {
         const div = document.createElement('div');
         div.className = 'chamada-item';
         div.innerHTML =
-            '<div class="chamada-nome">' + item.nome + '</div>' +
+            '<div class="chamada-nome"><span class="chamada-avatar">' + item.nome.charAt(0).toUpperCase() + '</span>' + item.nome + '</div>' +
             '<div class="chamada-opcoes">' +
                 '<label class="opcao ' + (item.status === 'presente' ? 'selecionado-presente' : '') + '">' +
                     '<input type="radio" name="aluno-' + item.id + '" value="presente" ' + (item.status === 'presente' ? 'checked' : '') +
@@ -450,14 +450,24 @@ function renderizarAlunos() {
         lista.innerHTML = '<p class="empty-msg">Nenhum aluno cadastrado neste ano.</p>';
         return;
     }
-    alunos.forEach(function(a) {
+    alunos.forEach(function(a, i) {
         const div = document.createElement('div');
         div.className = 'admin-aluno';
         div.innerHTML =
-            '<div class="admin-aluno-info"><strong>' + a.nome + '</strong></div>' +
+            '<div class="admin-aluno-info"><span class="chamada-avatar admin-avatar">' + a.nome.charAt(0).toUpperCase() + '</span><strong>' + a.nome + '</strong></div>' +
             '<div class="admin-aluno-acoes">' +
                 '<button class="btn-excluir" onclick="excluirAluno(\'' + a.id + '\')">Excluir</button>' +
             '</div>';
+        const avatar = div.querySelector('.admin-avatar');
+        const cores = [
+            'linear-gradient(135deg, #1e5fb4, #2a7de1)',
+            'linear-gradient(135deg, #27ae60, #2ecc71)',
+            'linear-gradient(135deg, #e67e22, #f39c12)',
+            'linear-gradient(135deg, #c0392b, #e74c3c)',
+            'linear-gradient(135deg, #8e44ad, #9b59b6)',
+            'linear-gradient(135deg, #16a085, #1abc9c)'
+        ];
+        if (avatar) avatar.style.background = cores[i % cores.length];
         lista.appendChild(div);
     });
 }
