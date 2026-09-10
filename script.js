@@ -548,6 +548,16 @@ window.fecharConfig = fecharConfig;
 window.ajustarZoom = ajustarZoom;
 window.mudarZoom = mudarZoom;
 window.resetZoom = resetZoom;
+window.atualizarSite = atualizarSite;
+
+function atualizarSite() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registros) {
+            registros.forEach(function(r) { r.update(); });
+        });
+    }
+    location.reload();
+}
 
 function zoomAtual() {
     return parseInt(localStorage.getItem(ZOOM_KEY) || '100', 10);
